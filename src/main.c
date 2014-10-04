@@ -40,6 +40,7 @@ enum controls {
   KEY_INC_AREA,
   KEY_DEC_AREA,
   KEY_CLOSE_WIN,
+  KEY_TOGGLE_BORDER,
   KEY_SWITCH_T1 = 100,
   KEY_TOGGLE_T1 = 200
 };
@@ -61,6 +62,7 @@ enum timer_modes {
 typedef struct
 {
   HWND hwnd; // Used as key
+  LONG style;
   RECT rect; // Used for restoring window layout
   void* prev;
   void* next;
@@ -201,6 +203,7 @@ void AddNode(HWND hwnd, unsigned short tag)
 
   new_node = (node*)malloc(sizeof(node));
   new_node->hwnd = hwnd;
+  new_node->style = 0;
   new_node->prev = NULL;
   new_node->next = NULL;
 
@@ -495,6 +498,7 @@ void RegisterHotkeys(HWND hwnd)
   RegisterHotKey(hwnd, KEY_INC_AREA, modkeys, 'Z');
   RegisterHotKey(hwnd, KEY_DEC_AREA, modkeys, 'X');
   RegisterHotKey(hwnd, KEY_CLOSE_WIN, modkeys, 'C');
+  RegisterHotKey(hwnd, KEY_TOGGLE_BORDER, modkeys, 'B');
 
   // Tags
   for (i = 0; i < TAGS; i++) {
@@ -686,6 +690,20 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
         case KEY_CLOSE_WIN:
           PostMessage(GetForegroundWindow(), WM_CLOSE, 0, 0);
+          break;
+
+        case KEY_TOGGLE_BORDER:
+          if (current->style == 0)
+          {
+            current->style = GetWindowLong(current->hwnd, GWL_STYLE);
+            SetWindowLong(current->hwnd, GWL_STYLE, current->style & ~(WS_BORDER | WS_DLGFRAME | WS_THICKFRAME));
+          } else {
+            SetWindowLong(current->hwnd, GWL_STYLE, current->style);
+            current->style = 0;
+          }
+          MinimizeWindow(current->hwnd);
+          ArrangeWindows();
+          SetForegroundWindow(current->hwnd);
           break;
       }
       break;
