@@ -21,6 +21,7 @@ Key bindings (By default mod is Ctrl + Alt)
     Mod + h/l - Shift split offset
     Mod + z/x - Increase/Decrease number of windows in main area
     Mod + c - Close foreground window
+    Mod + b - Toggle border for selected window on or off
     Mod + Space - Switch between tiling modes, Vertical/Horizontal stack, Grid, and Fullscreen
     Mod + y - Display foreground window class (For use with -i or -a parameters)
     Mod + u - Toggle lock cursor mode. In this mode cursor is locked inside the active window
